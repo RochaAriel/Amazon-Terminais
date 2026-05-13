@@ -146,9 +146,10 @@ function Icon({ name, className = "h-5 w-5" }) {
 
 function useRevealOnScroll() {
   useEffect(() => {
+    if (typeof window === "undefined" || typeof document === "undefined") return undefined;
     const elements = Array.from(document.querySelectorAll("[data-reveal]"));
     if (!elements.length) return undefined;
-    if (typeof window === "undefined" || !("IntersectionObserver" in window)) {
+    if (!("IntersectionObserver" in window)) {
       elements.forEach((element) => element.classList.add("is-visible"));
       return undefined;
     }
@@ -462,7 +463,7 @@ function validateStaticData() {
     timeline.length === 4 &&
     governancePillars.length === 5 &&
     contactTypes.length >= 4 &&
-    navItems.every((item) => item.label && item.href)
+    navItems.every((item) => typeof item.label === "string" && item.label.trim().length > 0 && typeof item.href === "string" && item.href.startsWith("#"))
   );
 }
 
@@ -472,41 +473,38 @@ export default function AmazonTerminaisSite() {
   useRevealOnScroll();
 
   const isDataValid = validateStaticData();
-          <div className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/10 p-5 shadow-2xl backdrop-blur-2xl">
-            <div className="rounded-[2rem] border border-white/10 bg-[#101C4B]/90 p-5">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.3em] text-white/55">Painel executivo</p>
-                  <h3 className="mt-2 text-2xl font-black text-white">Operação em tempo real</h3>
-                </div>
-                <div className="status-pulse rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-bold text-emerald-200">Online</div>
-              </div>
-              <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                {operationRows.map((row) => (
-                  <div key={row[0]} className="rounded-2xl border border-white/10 bg-white/[0.06] p-4">
-                    <p className="text-sm font-bold text-white">{row[0]}</p>
-                    <p className="mt-1 text-xs text-white/55">{row[1]} • {row[2]}</p>
-                    <p className={`mt-3 text-xs font-black ${row[3] === "Atenção" ? "text-amber-200" : "text-emerald-200"}`}>{row[3]}</p>
-                  </div>
-                ))}
-              </div>
-              <Sparkline />
-            </div>
-          </div>
+
+
+  if (!isDataValid) {
+    return (
+      <div className="min-h-screen bg-[#050816] px-6 py-16 text-white">
+        <div className="mx-auto max-w-2xl rounded-3xl border border-white/15 bg-white/5 p-8">
+          <p className="text-xs font-black uppercase tracking-[0.3em] text-red-300">Erro de dados</p>
+          <h1 className="mt-4 text-3xl font-black">Não foi possível carregar o site.</h1>
+          <p className="mt-4 text-white/75">Verifique as estruturas estáticas (movimentação, serviços e navegação) e tente novamente.</p>
         </div>
       </div>
-    </section>
-  );
-}
-
-function Institutional() {
-  const cards = [
-    ["Credibilidade", "Visual limpo, hierarquia forte e linguagem institucional para transmitir solidez."],
-    ["Eficiência", "Conteúdo organizado para clientes encontrarem rapidamente serviços, contatos e informações."],
-    ["Autoridade", "Design premium com foco em operação portuária, tecnologia e governança."],
-  ];
+    );
+  }
 
   return (
-    <section id="institucional" className="bg-white py-20" data-reveal>
-      <div className="mx-auto max-w-7xl px-5 lg:px-8">
-        <SectionTitle eyebrow="Institucional" title="Uma marca forte precisa de uma experiência digital à altura." description="A nova proposta mantém a seriedade corporativa da Amazon Termina
+    <div className={`theme-shell ${theme === "dark" ? "theme-dark" : ""}`}>
+      <AnimationStyles />
+      {showMaintenance && <MaintenancePopup onConfirm={() => setShowMaintenance(false)} />}
+      <Header />
+      <main>
+        <Hero />
+        <Institutional />
+        <Timeline />
+        <Operations />
+        <Infrastructure />
+        <Governance />
+        <Sustainability />
+        <News />
+        <Contact />
+      </main>
+      <Footer />
+      <ThemeToggle theme={theme} onToggleTheme={() => setTheme((currentTheme) => (currentTheme === "dark" ? "light" : "dark"))} />
+    </div>
+  );
+}
