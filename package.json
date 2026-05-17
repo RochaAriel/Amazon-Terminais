@@ -9,13 +9,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "latest",
-    "vite": "latest",
-    "react": "latest",
-    "react-dom": "latest",
-    "tailwindcss": "latest",
-    "@tailwindcss/vite": "latest",
-    "react-simple-maps": "latest"
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-simple-maps": "3.0.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@tailwindcss/vite": "4.1.7",
+    "@vitejs/plugin-react": "5.0.4",
+    "tailwindcss": "4.1.7",
+    "vite": "7.1.7"
+  }
 }
