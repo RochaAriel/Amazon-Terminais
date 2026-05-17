@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "test": "node tests/dependency-contract.test.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -17,6 +18,6 @@
     "@tailwindcss/vite": "4.1.7",
     "@vitejs/plugin-react": "5.0.4",
     "tailwindcss": "4.1.7",
-    "vite": "7.1.7"
+    "vite": "6.3.5"
   }
 }
