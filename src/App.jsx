@@ -2,6 +2,7 @@ import { useState } from "react";
 import Header from "./components/Header.jsx";
 import ThemeToggle from "./components/ThemeToggle.jsx";
 import Footer from "./components/Footer.jsx";
+import MaintenanceModal from "./components/MaintenanceModal.jsx";
 import Hero from "./sections/Hero.jsx";
 import Institutional from "./sections/Institutional.jsx";
 import Timeline from "./sections/Timeline.jsx";
@@ -16,6 +17,7 @@ import { brand, validateStaticData } from "./data/siteData.js";
 
 export default function App() {
   const [theme, setTheme] = useState("light");
+  const [isMaintenanceVisible, setIsMaintenanceVisible] = useState(true);
   useRevealOnScroll();
 
   const isDataValid = validateStaticData();
@@ -49,6 +51,7 @@ export default function App() {
       <News />
       <Contact />
       <Footer />
+      {isMaintenanceVisible ? <MaintenanceModal onClose={() => setIsMaintenanceVisible(false)} /> : null}
     </main>
   );
 }
