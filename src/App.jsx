@@ -13,32 +13,41 @@ import Sustainability from "./sections/Sustainability.jsx";
 import News from "./sections/News.jsx";
 import Contact from "./sections/Contact.jsx";
 import useRevealOnScroll from "./hooks/useRevealOnScroll.js";
-import { brand, validateStaticData } from "./data/siteData.js";
+
+// Aviso de manutenção ligado por padrão. Para desligar no build: VITE_MAINTENANCE=false
+const MAINTENANCE_ENABLED = import.meta.env.VITE_MAINTENANCE !== "false";
+const MAINTENANCE_DISMISSED_KEY = "at-maintenance-dismissed";
+
+function wasMaintenanceDismissed() {
+  try {
+    return window.sessionStorage.getItem(MAINTENANCE_DISMISSED_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function rememberMaintenanceDismissed() {
+  try {
+    window.sessionStorage.setItem(MAINTENANCE_DISMISSED_KEY, "1");
+  } catch {
+    // sessionStorage indisponível (aba anônima restrita, etc.): o aviso só volta a aparecer no próximo carregamento.
+  }
+}
 
 export default function App() {
   const [theme, setTheme] = useState("light");
-  const [isMaintenanceVisible, setIsMaintenanceVisible] = useState(true);
+  const [isMaintenanceVisible, setIsMaintenanceVisible] = useState(() => MAINTENANCE_ENABLED && !wasMaintenanceDismissed());
   useRevealOnScroll();
 
-  const isDataValid = validateStaticData();
   const toggleTheme = () => setTheme((currentTheme) => (currentTheme === "light" ? "dark" : "light"));
 
-  const brandThemeVariables = {
-    "--brand-blue": brand.colors.blue,
-    "--brand-dark-blue": brand.colors.darkBlue,
-    "--brand-red": brand.colors.red,
-    "--brand-red-dark": brand.colors.redDark,
-    "--brand-red-dark-hover": brand.colors.redDarkHover,
-    "--brand-light": brand.colors.light,
-    "--brand-ink": brand.colors.ink,
+  const closeMaintenance = () => {
+    rememberMaintenanceDismissed();
+    setIsMaintenanceVisible(false);
   };
 
-  if (!isDataValid) {
-    return <div className="p-6 text-sm text-red-700">Erro ao carregar os dados do site.</div>;
-  }
-
   return (
-    <main className={`theme-shell theme-${theme} min-h-screen bg-white text-slate-900`} style={brandThemeVariables}>
+    <main className={`theme-shell theme-${theme} min-h-screen bg-white text-slate-900`}>
       <Header />
       <ThemeToggle theme={theme} onToggleTheme={toggleTheme} />
       <Hero />
@@ -51,7 +60,7 @@ export default function App() {
       <News />
       <Contact />
       <Footer />
-      {isMaintenanceVisible ? <MaintenanceModal onClose={() => setIsMaintenanceVisible(false)} /> : null}
+      {isMaintenanceVisible ? <MaintenanceModal onClose={closeMaintenance} /> : null}
     </main>
   );
 }
