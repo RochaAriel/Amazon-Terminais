@@ -4,6 +4,8 @@ import {
   palette,
   ship as shipSpec,
   quay as quaySpec,
+  dolphins as dolphinSpec,
+  trestle as trestleSpec,
   mooring as mooringSpec,
   gangway as gangwaySpec,
   craneCycle,
@@ -14,12 +16,13 @@ import {
   render as renderSpec,
 } from "./portSceneSpec.js";
 
-// Cena procedural (só código, sem modelos externos): navio atracado no píer com 3 guindastes
+// Cena procedural (só código, sem modelos externos): navio atracado na plataforma do terminal
+// (sobre estacas, ligada à margem por uma ponte de acesso) com 3 guindastes
 // descarregando bobinas e contêineres. Determinística: o estado depende só do tempo `t`,
 // então o mesmo `t` sempre gera o mesmo quadro (prefers-reduced-motion e testes).
 
 const CYCLES_PER_ROUND = cargoSpec.slotSlewOffsets.length;
-const START_TIME = craneCycle.duration * 2.4; // começa com o píer já com carga
+const START_TIME = craneCycle.duration * 2.4; // começa com a plataforma já com carga
 const UP = new THREE.Vector3(0, 1, 0);
 const X_AXIS = new THREE.Vector3(1, 0, 0);
 const HOOK_BLOCK_OFFSET = 0.12; // bloco do gancho fica acima do ponto de içamento
@@ -641,62 +644,196 @@ function cornerCastingsGeometry(w, h, l) {
   return merge(parts);
 }
 
-// ---------- Píer ----------
-function buildQuay(mats, shared) {
+// ---------- Plataforma de atracação, dolfins e ponte de acesso ----------
+const bollardProfile = [
+  new THREE.Vector2(0, 0), new THREE.Vector2(0.09, 0), new THREE.Vector2(0.07, 0.04),
+  new THREE.Vector2(0.06, 0.13), new THREE.Vector2(0.09, 0.16), new THREE.Vector2(0.09, 0.19), new THREE.Vector2(0, 0.19),
+];
+
+function lightMastGeometry(x, y, z, height, armDir = -1) {
+  return [
+    cylGeo(0.05, 0.07, height, 10, { x, y: y + height / 2, z }),
+    boxGeo(0.5, 0.08, 0.24, x, y + height, z + armDir * 0.06),
+    cylGeo(0.12, 0.14, 0.1, 12, { x, y: y + 0.05, z }),
+  ];
+}
+
+// Pilares (estacas) do nível da laje até abaixo da água
+function pileGeo(x, z, topY, radius) {
+  const height = topY - quaySpec.piles.bottomY;
+  return cylGeo(radius, radius * 1.08, height, 12, { x, y: quaySpec.piles.bottomY + height / 2, z });
+}
+
+function buildPlatform(mats, shared) {
   const group = new THREE.Group();
-  group.name = "quay";
+  group.name = "berth-platform";
+  const { topY, slab, zStart, depth, piles } = quaySpec;
   const width = quaySpec.xTo - quaySpec.xFrom;
   const cx = (quaySpec.xFrom + quaySpec.xTo) / 2;
-  const bodyHeight = quaySpec.topY + 0.9;
-  const body = mesh(new THREE.BoxGeometry(width, bodyHeight, quaySpec.depth), mats.quay, "quay-deck");
-  body.position.set(cx, quaySpec.topY - bodyHeight / 2, quaySpec.zStart + quaySpec.depth / 2);
-  group.add(body);
+  const zMid = zStart + depth / 2;
 
-  // Viga de coroamento na borda + faixa de segurança
-  const cap = mesh(new THREE.BoxGeometry(width, 0.14, 0.3), mats.quayCap, "quay-capping-beam");
-  cap.position.set(cx, quaySpec.topY - 0.05, quaySpec.zStart + 0.15);
-  const edge = mesh(new THREE.BoxGeometry(width, 0.01, 0.06), mats.quayEdge, "quay-edge-line", { cast: false });
-  edge.position.set(cx, quaySpec.topY + 0.025, quaySpec.zStart + 0.24);
+  // Laje
+  const deck = mesh(new THREE.BoxGeometry(width, slab, depth), mats.quay, "platform-deck");
+  deck.position.set(cx, topY - slab / 2, zMid);
+  group.add(deck);
+
+  // Vigas longarinas sob a laje (uma por linha de estacas) e estacas aparentes
+  const beamY = topY - slab - 0.11;
+  const structure = piles.rows.map((z) => boxGeo(width - 0.2, 0.22, 0.26, cx, beamY, z));
+  for (let x = quaySpec.xFrom + 0.4; x <= quaySpec.xTo - 0.35; x += piles.spacing) {
+    piles.rows.forEach((z) => structure.push(pileGeo(x, z, beamY - 0.1, piles.radius)));
+    // Travessa transversal sobre cada linha de estacas
+    structure.push(boxGeo(0.2, 0.18, depth - 0.4, x, beamY + 0.02, zMid));
+  }
+  group.add(mesh(merge(structure), mats.pile, "platform-piles"));
+
+  // Viga de coroamento na face de atracação + faixa de segurança
+  const cap = mesh(new THREE.BoxGeometry(width, 0.14, 0.3), mats.quayCap, "platform-capping-beam");
+  cap.position.set(cx, topY - 0.05, zStart + 0.15);
+  const edge = mesh(new THREE.BoxGeometry(width, 0.01, 0.06), mats.quayEdge, "platform-edge-line", { cast: false });
+  edge.position.set(cx, topY + 0.025, zStart + 0.24);
   group.add(cap, edge);
 
-  // Defensas cilíndricas de borracha penduradas na face do píer
-  group.add(mesh(merge(quaySpec.fenders.map((x) => cylGeo(0.14, 0.14, 0.95, 18, { x, y: quaySpec.topY - 0.32, z: quaySpec.zStart - 0.12, rotZ: Math.PI / 2 }))), mats.fender, "fenders"));
+  // Defensas: painel frontal sobre elemento de borracha, presos na face da plataforma
+  group.add(mesh(merge(quaySpec.fenders.map((x) => boxGeo(0.62, 0.62, 0.08, x, topY - 0.38, zStart - 0.19))), mats.fender, "fender-panels"));
+  group.add(mesh(merge(quaySpec.fenders.map((x) => cylGeo(0.16, 0.2, 0.14, 14, { x, y: topY - 0.38, z: zStart - 0.08, rotX: Math.PI / 2 }))), mats.darkSteel, "fender-units"));
 
-  // Cabeços de amarração (formato de cogumelo)
-  const bollardProfile = [
-    new THREE.Vector2(0, 0), new THREE.Vector2(0.09, 0), new THREE.Vector2(0.07, 0.04),
-    new THREE.Vector2(0.06, 0.13), new THREE.Vector2(0.09, 0.16), new THREE.Vector2(0.09, 0.19), new THREE.Vector2(0, 0.19),
-  ];
-  group.add(mesh(merge(quaySpec.bollards.map((x) => {
-    const g = new THREE.LatheGeometry(bollardProfile, 16);
-    g.translate(x, quaySpec.topY + 0.03, quaySpec.zStart + 0.38);
-    return g;
-  })), mats.bollard, "bollards"));
-
-  // Postes de iluminação do píer
+  // Postes de iluminação
   quaySpec.lightMasts.forEach((x, index) => {
-    const z = quaySpec.zStart + quaySpec.depth - 0.35;
-    group.add(mesh(merge([
-      cylGeo(0.05, 0.07, 3.2, 10, { x, y: quaySpec.topY + 1.6, z }),
-      boxGeo(0.5, 0.08, 0.24, x, quaySpec.topY + 3.2, z - 0.06),
-      cylGeo(0.12, 0.14, 0.1, 12, { x, y: quaySpec.topY + 0.05, z }),
-    ]), mats.darkSteel, `light-mast-${index}`));
-    const lamp = mesh(boxGeo(0.44, 0.015, 0.18, x, quaySpec.topY + 3.155, z - 0.06), mats.lamp, `lamp-${index}`, { cast: false, receive: false });
-    group.add(lamp);
+    const z = zStart + depth - 0.35;
+    group.add(mesh(merge(lightMastGeometry(x, topY, z, 3.2)), mats.darkSteel, `light-mast-${index}`));
+    group.add(mesh(boxGeo(0.44, 0.015, 0.18, x, topY + 3.155, z - 0.06), mats.lamp, `lamp-${index}`, { cast: false, receive: false }));
   });
 
-  // Pilhas fixas de contêineres no fundo do píer
+  // Pilha fixa de contêineres no fundo da plataforma
   quaySpec.staticStacks.forEach((stack, si) => {
     const { length, height, width: cw } = cargoSpec.container;
     for (let c = 0; c < stack.columns; c += 1) {
       for (let tier = 0; tier < stack.tiers; tier += 1) {
         const item = createCargoMesh("container", shared, mats, { alongX: true });
         setCargoColor(item, si * 3 + c * 2 + tier);
-        item.mesh.position.set(stack.x + (c - (stack.columns - 1) / 2) * (length + 0.06), quaySpec.topY + height / 2 + tier * (height + 0.01), quaySpec.zStart + quaySpec.depth - cw / 2 - 0.15);
+        item.mesh.position.set(stack.x + (c - (stack.columns - 1) / 2) * (length + 0.06), topY + height / 2 + tier * (height + 0.01), zStart + depth - cw / 2 - 0.15);
         group.add(item.mesh);
       }
     }
   });
+  return group;
+}
+
+// Treliça de passarela entre dois pontos no nível do deck
+function catwalkGeometry(from, to) {
+  const parts = [];
+  const dir = new THREE.Vector3().subVectors(to, from);
+  const length = dir.length();
+  const mid = from.clone().add(to).multiplyScalar(0.5);
+  const plank = new THREE.BoxGeometry(length, 0.04, 0.34);
+  plank.translate(mid.x, mid.y, mid.z);
+  parts.push(plank);
+  const bays = Math.max(2, Math.round(length / 0.45));
+  [-0.17, 0.17].forEach((dz) => {
+    const off = new THREE.Vector3(0, 0, dz);
+    const lowA = from.clone().add(off);
+    const lowB = to.clone().add(off);
+    const up = new THREE.Vector3(0, 0.32, 0);
+    parts.push(strutGeo(lowA.clone().add(up), lowB.clone().add(up), 0.016, 5));
+    for (let k = 0; k < bays; k += 1) {
+      const a = lowA.clone().lerp(lowB, k / bays);
+      const b = lowA.clone().lerp(lowB, (k + 1) / bays);
+      parts.push(strutGeo(a, a.clone().add(up), 0.012, 4));
+      parts.push(strutGeo(a, b.clone().add(up), 0.01, 4));
+    }
+    parts.push(strutGeo(lowB, lowB.clone().add(up), 0.012, 4));
+  });
+  return merge(parts);
+}
+
+function buildDolphins(mats) {
+  const group = new THREE.Group();
+  group.name = "mooring-dolphins";
+  const { topY } = quaySpec;
+  const s = dolphinSpec.size;
+  const caps = [];
+  const piles = [];
+  const walks = [];
+  dolphinSpec.items.forEach(({ x, z }) => {
+    caps.push(boxGeo(s, 0.36, s, x, topY - 0.18, z));
+    [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx, sz]) => piles.push(pileGeo(x + sx * s * 0.3, z + sz * s * 0.3, topY - 0.36, 0.09)));
+    // Passarela até a ponta mais próxima da plataforma
+    const platformX = x < 0 ? quaySpec.xFrom : quaySpec.xTo;
+    const edgeX = x < 0 ? x + s / 2 : x - s / 2;
+    walks.push(catwalkGeometry(new THREE.Vector3(edgeX, topY, z), new THREE.Vector3(platformX, topY, z)));
+  });
+  group.add(mesh(merge(caps), mats.quay, "dolphin-caps"));
+  group.add(mesh(merge(piles), mats.pile, "dolphin-piles"));
+  group.add(mesh(merge(walks), mats.steel, "catwalks"));
+  return group;
+}
+
+function buildBollards(mats) {
+  return mesh(merge(quaySpec.bollards.map(([x, z]) => {
+    const g = new THREE.LatheGeometry(bollardProfile, 16);
+    g.translate(x, quaySpec.topY + 0.03, z);
+    return g;
+  })), mats.bollard, "bollards");
+}
+
+// Ponte de acesso: construída ao longo do +x local e girada até o ângulo real
+function buildTrestle(mats) {
+  const group = new THREE.Group();
+  group.name = "access-trestle";
+  const { length: L, width: w, slab, bentSpacing, lightSpacing } = trestleSpec;
+  const topY = quaySpec.topY;
+  const half = w / 2;
+
+  const deck = new THREE.BoxGeometry(L, slab, w);
+  deck.translate(L / 2, -slab / 2, 0);
+  group.add(mesh(deck, mats.asphalt, "trestle-deck"));
+
+  // Meio-fio, guarda-corpo e sinalização da pista
+  const curbs = [-1, 1].map((sz) => boxGeo(L, 0.07, 0.09, L / 2, 0.035, sz * (half - 0.045)));
+  group.add(mesh(merge(curbs), mats.quayCap, "trestle-curbs"));
+  const rails = [];
+  [-1, 1].forEach((sz) => {
+    const z = sz * (half - 0.03);
+    rails.push(boxGeo(L, 0.02, 0.02, L / 2, 0.26, z), boxGeo(L, 0.016, 0.016, L / 2, 0.16, z));
+    for (let x = 0.3; x < L; x += 0.6) rails.push(boxGeo(0.02, 0.2, 0.02, x, 0.17, z));
+  });
+  group.add(mesh(merge(rails), mats.light, "trestle-railings", { receive: false }));
+  const marks = [];
+  for (let x = 0.8; x < L; x += 0.9) marks.push(boxGeo(0.45, 0.006, 0.035, x, 0.004, 0));
+  [-1, 1].forEach((sz) => marks.push(boxGeo(L, 0.006, 0.03, L / 2, 0.004, sz * (half - 0.13))));
+  group.add(mesh(merge(marks), mats.quayEdge, "trestle-markings", { cast: false }));
+
+  // Pórticos de estacas com travessa
+  const bents = [];
+  for (let x = 0.9; x < L; x += bentSpacing) {
+    bents.push(boxGeo(0.26, 0.2, w + 0.12, x, -slab - 0.1, 0));
+    [-1, 1].forEach((sz) => bents.push(pileGeo(0, 0, topY - slab - 0.2, 0.085).translate(x, -topY, sz * (half - 0.2))));
+  }
+  group.add(mesh(merge(bents), mats.pile, "trestle-bents"));
+
+  // Postes de iluminação alternando os lados
+  const masts = [];
+  const lamps = [];
+  for (let x = 1.6, i = 0; x < L; x += lightSpacing, i += 1) {
+    const sz = i % 2 === 0 ? 1 : -1;
+    const z = sz * (half + 0.06);
+    masts.push(...lightMastGeometry(0, 0, 0, 1.7, -sz).map((g) => g.translate(x, 0, z)));
+    lamps.push(boxGeo(0.44, 0.015, 0.18, x, 1.655, z - sz * 0.06));
+  }
+  group.add(mesh(merge(masts), mats.darkSteel, "trestle-light-masts"));
+  group.add(mesh(merge(lamps), mats.lamp, "trestle-lamps", { cast: false, receive: false }));
+
+  // Encontro com o fundo da plataforma (sobrepõe um pouco para não abrir fresta)
+  group.position.set(trestleSpec.anchorX, topY, quaySpec.zStart + quaySpec.depth - 0.25);
+  group.rotation.y = -THREE.MathUtils.degToRad(trestleSpec.angleDeg);
+  return group;
+}
+
+function buildQuay(mats, shared) {
+  const group = new THREE.Group();
+  group.name = "terminal-berth";
+  group.add(buildPlatform(mats, shared), buildDolphins(mats), buildBollards(mats), buildTrestle(mats));
   return group;
 }
 
@@ -707,7 +844,8 @@ function buildMooringAndGangway(mats) {
   const bitts = [];
   mooringSpec.forEach(({ from: [x, z], bollard }) => {
     const start = new THREE.Vector3(x, shipSpec.deckY + 0.14, z);
-    const end = new THREE.Vector3(quaySpec.bollards[bollard], quaySpec.topY + 0.15, quaySpec.zStart + 0.38);
+    const [bx, bz] = quaySpec.bollards[bollard];
+    const end = new THREE.Vector3(bx, quaySpec.topY + 0.15, bz);
     const mid = start.clone().add(end).multiplyScalar(0.5);
     mid.y -= 0.28;
     ropes.push(new THREE.TubeGeometry(new THREE.QuadraticBezierCurve3(start, mid, end), 24, 0.014, 5, false));
@@ -716,7 +854,7 @@ function buildMooringAndGangway(mats) {
   });
   group.add(mesh(merge(ropes), mats.rope, "mooring-lines", { receive: false }));
 
-  // Prancha de embarque do convés até o píer
+  // Prancha de embarque do convés até a plataforma
   const a = new THREE.Vector3(gangwaySpec.x, shipSpec.deckY + 0.06, shipSpec.beam / 2 - 0.12);
   const b = new THREE.Vector3(gangwaySpec.x + 1.15, quaySpec.topY + 0.02, quaySpec.zStart + 0.95);
   const dir = new THREE.Vector3().subVectors(b, a);
@@ -859,6 +997,8 @@ export function createPortScene(canvas, { reducedMotion = false } = {}) {
     quay: std("#ffffff", { map: textures.concrete, roughness: 0.92, metalness: 0.02 }),
     quayCap: std(palette.quayCap, { roughness: 0.85 }),
     quayEdge: new THREE.MeshBasicMaterial({ color: palette.quayEdge }),
+    pile: std(palette.pile, { roughness: 0.78, metalness: 0.1 }),
+    asphalt: std(palette.asphalt, { roughness: 0.95, metalness: 0.02 }),
     fender: std(palette.fender, { roughness: 0.9 }),
     bollard: std(palette.bollard, { roughness: 0.4, metalness: 0.8 }),
     rope: std(palette.rope, { roughness: 0.9 }),
