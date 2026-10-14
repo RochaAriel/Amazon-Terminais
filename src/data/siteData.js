@@ -11,23 +11,23 @@ export const stats = [
   { label: "Terminal de Uso Privado", value: "TUP" },
   { label: "Operação contínua", value: "24/7" },
   { label: "Início do grupo em Manaus", value: "2003" },
-  { label: "m² de área construída", value: "75 mil" },
+  { label: "Localização do terminal", value: "Manaus" },
 ];
 
 export const services = [
   {
-    title: "Gate e Controle",
-    description: "Fluxo de veículos, segurança de acesso, registro operacional e validação de entrada e saída.",
+    title: "Entrada e saída de veículos",
+    description: "Controle de acesso de veículos, com validação de entrada e saída e registro das movimentações no terminal.",
     icon: "gate",
   },
   {
-    title: "Logística Integrada",
-    description: "Ligação direta entre o terminal, o complexo industrial do grupo e os clientes, com menos etapas entre o navio e o destino da carga.",
+    title: "Integração com a indústria",
+    description: "Ligação entre a operação portuária e o complexo industrial da Amazon Aço para organizar o fluxo de cargas do grupo.",
     icon: "route",
   },
   {
-    title: "Tecnologia Operacional",
-    description: "Monitoramento por câmeras, controle de acesso e sistemas de gestão para acompanhar cada movimento no terminal.",
+    title: "Acompanhamento das cargas",
+    description: "Câmeras e sistemas de gestão apoiam o registro das movimentações e o acompanhamento da rotina operacional.",
     icon: "chart",
   },
 ];
@@ -55,7 +55,7 @@ export const news = [
   {
     date: "Desde 2003",
     title: "Mais de duas décadas de Amazon Aço em Manaus",
-    text: "Da distribuição de aço à indústria e ao terminal próprio, o grupo cresce junto com a Região Norte.",
+    text: "A trajetória do grupo começou na distribuição de ferro e aço em Manaus, em março de 2003.",
   },
 ];
 
@@ -73,7 +73,7 @@ export const timeline = [
   {
     year: "2013",
     title: "Nova estrutura no Puraquequara",
-    text: "Mudança para uma unidade maior e mais moderna, com cerca de 75 mil m² de área construída, próxima ao Encontro das Águas.",
+    text: "Transferência para a unidade industrial no Puraquequara, com cerca de 75 mil m² de área construída, próxima ao Encontro das Águas.",
   },
   {
     year: "2018",
@@ -82,7 +82,7 @@ export const timeline = [
   },
   {
     year: "2021",
-    title: "Ampliação aprovada",
+    title: "Viabilidade locacional reconhecida",
     text: "A ANTAQ reconhece a viabilidade locacional do projeto de ampliação da área do terminal.",
   },
   {
@@ -94,28 +94,28 @@ export const timeline = [
 
 export const governancePillars = [
   {
-    title: "Satisfação do Cliente",
-    text: "Atendimento com excelência, clareza nas informações e foco na continuidade operacional.",
+    title: "Atendimento",
+    text: "Comunicar com clareza as informações necessárias ao atendimento de clientes e parceiros.",
     icon: "check",
   },
   {
     title: "Melhoria Contínua",
-    text: "Evolução constante dos processos, indicadores e rotinas para elevar o padrão de entrega.",
+    text: "Revisar rotinas e indicadores para identificar ajustes nos processos do terminal.",
     icon: "chart",
   },
   {
     title: "Gestão por Processos",
-    text: "Procedimentos padronizados para garantir segurança, previsibilidade e controle operacional.",
+    text: "Organizar as etapas de trabalho com procedimentos definidos e registros da operação.",
     icon: "gate",
   },
   {
     title: "Gestão de Riscos",
-    text: "Identificação, controle e mitigação de riscos ligados à operação, pessoas e infraestrutura.",
+    text: "Identificar riscos à equipe, à carga e à infraestrutura para orientar medidas de prevenção.",
     icon: "shield",
   },
   {
     title: "Sustentabilidade",
-    text: "Responsabilidade ambiental, boas práticas e compromisso com o desenvolvimento regional.",
+    text: "Considerar os impactos ambientais da atividade portuária no planejamento da operação.",
     icon: "leaf",
   },
 ];

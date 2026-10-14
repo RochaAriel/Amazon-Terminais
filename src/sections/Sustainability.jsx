@@ -2,16 +2,16 @@ import Icon from "../components/Icon.jsx";
 import SectionTitle from "../components/SectionTitle.jsx";
 
 const items = [
-  ["ESG", "Práticas sustentáveis, responsabilidade ambiental e evolução contínua."],
-  ["Segurança", "Procedimentos, controle, monitoramento e cultura operacional."],
-  ["Inovação", "Digitalização de processos, indicadores e melhoria de gestão."],
+  ["Cuidado ambiental", "Considerar os impactos da atividade portuária e o cuidado com o entorno do terminal nas decisões da operação."],
+  ["Segurança das pessoas", "Orientar o acesso e a circulação no terminal, com atenção às equipes, aos motoristas e aos visitantes."],
+  ["Controle operacional", "Usar registros e monitoramento para apoiar o acompanhamento das cargas e a revisão das rotinas."],
 ];
 
 export default function Sustainability() {
   return (
     <section id="sustentabilidade" className="bg-brand-dark-blue py-20 text-white" data-reveal>
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
-        <SectionTitle light eyebrow="Sustentabilidade" title="Segurança, responsabilidade e visão de futuro." description="Compromisso com as pessoas, com a operação e com os rios que conectam Manaus ao resto do país." />
+        <SectionTitle light eyebrow="Responsabilidade" title="Operar na Amazônia exige cuidado." description="Cuidar das pessoas e considerar o ambiente em que o terminal está inserido são compromissos que orientam a atividade portuária no Puraquequara." />
         <div className="mt-14 grid gap-6 md:grid-cols-3">
           {items.map(([title, text], index) => (
             <div key={title} data-reveal="zoom" style={{ "--reveal-delay": `${index * 90}ms` }} className="rounded-[2rem] border border-white/10 bg-white/[0.06] p-8 backdrop-blur">

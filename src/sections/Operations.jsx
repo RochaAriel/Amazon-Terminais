@@ -6,7 +6,7 @@ export default function Operations() {
   return (
     <section id="operacoes" className="section-soft bg-brand-light py-20" data-reveal>
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
-        <SectionTitle eyebrow="Operações" title="Do navio ao destino final." description="Cada etapa da operação no terminal é planejada, controlada e registrada, do acesso ao pátio até a saída da carga." />
+        <SectionTitle eyebrow="Operações" title="Acesso, movimentação e ligação com a indústria." description="Conheça as frentes que compõem a rotina do terminal, da entrada de veículos ao acompanhamento das cargas." />
         <div className="mt-14 grid gap-6 md:grid-cols-3">
           {services.map((service, index) => (
             <article key={service.title} data-reveal="zoom" style={{ "--reveal-delay": `${index * 80}ms` }} className="surface group rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
@@ -16,7 +16,7 @@ export default function Operations() {
               <h3 className="text-xl font-black text-brand-blue">{service.title}</h3>
               <p className="theme-text-muted mt-4 text-sm leading-7 text-slate-600">{service.description}</p>
               <a href="#contato" className="mt-7 inline-flex items-center gap-2 text-sm font-black text-brand-red-dark">
-                Saiba mais <Icon name="arrow" className="h-4 w-4" />
+                Consultar a equipe <Icon name="arrow" className="h-4 w-4" />
               </a>
             </article>
           ))}

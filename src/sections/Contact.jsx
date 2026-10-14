@@ -11,8 +11,8 @@ export default function Contact() {
             <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.055)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.055)_1px,transparent_1px)] bg-[size:42px_42px] opacity-25" />
             <div className="relative">
               <p className="text-xs font-black uppercase tracking-[0.3em] text-white/60">Fale Conosco</p>
-              <h2 className="mt-5 text-3xl font-black tracking-tight sm:text-4xl md:text-5xl">Atendimento institucional para clientes, parceiros e fornecedores.</h2>
-              <p className="mt-6 text-base leading-7 text-white/75 sm:text-lg sm:leading-8">Fale com a equipe da Amazon Terminais sobre operações, cargas, fornecimento e assuntos institucionais.</p>
+              <h2 className="mt-5 text-3xl font-black tracking-tight sm:text-4xl md:text-5xl">Converse com a Amazon Terminais.</h2>
+              <p className="mt-6 text-base leading-7 text-white/75 sm:text-lg sm:leading-8">Para tratar de uma operação, informe o tipo de carga, o volume estimado e o período previsto. Para outros assuntos, selecione a área relacionada à sua mensagem.</p>
               <div className="mt-8 grid gap-3 sm:grid-cols-2">
                 {contactTypes.map((type) => (
                   <div key={type} className="rounded-2xl border border-white/10 bg-white/[0.07] px-4 py-3 text-sm font-bold text-white/85">
@@ -51,7 +51,7 @@ export default function Contact() {
               </label>
               <label className="text-sm font-bold text-slate-700 md:col-span-2">
                 Mensagem
-                <textarea className="mt-2 min-h-32 w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-brand-blue" placeholder="Descreva sua solicitação" />
+                <textarea className="mt-2 min-h-32 w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-brand-blue" placeholder="Informe o assunto e os detalhes da sua solicitação" />
               </label>
             </div>
             <button type="button" className="mt-6 inline-flex w-full items-center justify-center gap-3 rounded-full bg-brand-red-dark px-6 py-4 font-black text-white sm:px-8 transition hover:-translate-y-0.5 hover:bg-brand-red-dark-hover md:w-auto">
