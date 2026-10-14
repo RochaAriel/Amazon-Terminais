@@ -50,6 +50,12 @@ const iconPaths = {
       <path d="M4 17h16" />
     </>
   ),
+  close: (
+    <>
+      <path d="M6 6l12 12" />
+      <path d="M18 6 6 18" />
+    </>
+  ),
   leaf: (
     <>
       <path d="M5 19c7-1 13-7 14-14-7 1-13 7-14 14Z" />

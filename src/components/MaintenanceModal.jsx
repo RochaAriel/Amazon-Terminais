@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react";
+
 function AmazonALogo() {
   return (
     <div className="relative flex h-32 w-32 items-center justify-center rounded-[2rem] border border-white/20 bg-white/10 p-4 shadow-[0_20px_60px_rgba(0,0,0,0.28)] backdrop-blur-xl md:h-44 md:w-44">
@@ -21,8 +23,44 @@ function AmazonALogo() {
 }
 
 export default function MaintenanceModal({ onClose }) {
+  const confirmButtonRef = useRef(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
+  useEffect(() => {
+    const previouslyFocused = document.activeElement;
+    const previousOverflow = document.body.style.overflow;
+
+    // Trava o scroll da página por trás do aviso e leva o foco para o botão.
+    document.body.style.overflow = "hidden";
+    // preventScroll: no mobile o aviso abre no topo (título visível), não rolado até o botão.
+    confirmButtonRef.current?.focus({ preventScroll: true });
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onCloseRef.current();
+        return;
+      }
+
+      // O botão é o único elemento focável do aviso: mantém o Tab dentro dele.
+      if (event.key === "Tab") {
+        event.preventDefault();
+        confirmButtonRef.current?.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+      if (previouslyFocused instanceof HTMLElement) previouslyFocused.focus();
+    };
+  }, []);
+
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden bg-[#0D173F]/95 px-5 py-8 text-white backdrop-blur-xl">
+    <div className="fixed inset-0 z-[9999] overflow-hidden bg-brand-dark-blue/95 text-white backdrop-blur-xl">
       <style>{`
         @keyframes maintenancePulse {
           0%, 100% { opacity: .35; transform: scale(1); }
@@ -61,82 +99,87 @@ export default function MaintenanceModal({ onClose }) {
         }
       `}</style>
 
-      <div className="maintenance-pulse absolute -left-32 top-20 h-96 w-96 rounded-full bg-[#ED1C24]/20 blur-3xl" />
+      <div className="maintenance-pulse absolute -left-32 top-20 h-96 w-96 rounded-full bg-brand-red/20 blur-3xl" />
       <div className="maintenance-pulse absolute -right-32 bottom-10 h-96 w-96 rounded-full bg-blue-500/20 blur-3xl" />
 
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.045)_1px,transparent_1px)] bg-[size:48px_48px] opacity-20" />
 
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="maintenance-title"
-        className="relative w-full max-w-5xl overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/[0.075] shadow-2xl backdrop-blur-2xl"
-      >
-        <div className="absolute left-0 top-0 h-[3px] w-full overflow-hidden bg-white/10">
-          <div className="maintenance-line h-full w-1/2 bg-[#ED1C24]" />
-        </div>
+      {/* Camada rolável: em telas baixas (mobile) o aviso inteiro, inclusive o botão, fica acessível. */}
+      <div className="relative flex h-full overflow-y-auto overscroll-contain px-5 py-8">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="maintenance-title"
+          aria-describedby="maintenance-description"
+          className="relative m-auto w-full max-w-5xl overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/[0.075] shadow-2xl backdrop-blur-2xl"
+        >
+          <div className="absolute left-0 top-0 h-[3px] w-full overflow-hidden bg-white/10">
+            <div className="maintenance-line h-full w-1/2 bg-brand-red" />
+          </div>
 
-        <div className="grid min-h-[460px] lg:grid-cols-[0.9fr_1.25fr]">
-          <aside className="relative flex items-center justify-center overflow-hidden border-b border-white/10 bg-[#07102D]/50 p-10 lg:border-b-0 lg:border-r">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(237,28,36,.24),transparent_34%),linear-gradient(135deg,rgba(255,255,255,.09),rgba(255,255,255,.02))]" />
+          <div className="grid min-h-[460px] lg:grid-cols-[0.9fr_1.25fr]">
+            <aside className="relative flex items-center justify-center overflow-hidden border-b border-white/10 bg-[#07102D]/50 p-10 pt-24 lg:border-b-0 lg:pt-10 lg:border-r">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(237,28,36,.24),transparent_34%),linear-gradient(135deg,rgba(255,255,255,.09),rgba(255,255,255,.02))]" />
 
-            <div className="absolute left-8 top-8 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-white/55">
-              Amazon Terminais
-            </div>
+              <div className="absolute left-8 top-8 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-white/55">
+                Amazon Terminais
+              </div>
 
-            <div className="logo-breath relative flex flex-col items-center text-center">
-              <AmazonALogo />
+              <div className="logo-breath relative flex flex-col items-center text-center">
+                <AmazonALogo />
 
-              <div className="mt-8 max-w-xs">
-                <p className="text-sm font-bold uppercase tracking-[0.28em] text-[#ED1C24]">Ambiente protegido</p>
+                <div className="mt-8 max-w-xs">
+                  <p className="text-sm font-bold uppercase tracking-[0.28em] text-brand-red">Ambiente protegido</p>
 
-                <p className="mt-3 text-sm leading-6 text-white/58">
-                  Estamos preparando uma experiência institucional mais estável, moderna e segura.
+                  <p className="mt-3 text-sm leading-6 text-white/58">
+                    Estamos preparando uma experiência institucional mais estável, moderna e segura.
+                  </p>
+                </div>
+              </div>
+            </aside>
+
+            <section className="relative flex flex-col justify-center p-8 md:p-12 lg:p-14">
+              <span className="w-fit rounded-full border border-white/10 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.28em] text-white/70">
+                Aviso temporário
+              </span>
+
+              <h2 id="maintenance-title" className="mt-7 max-w-xl text-4xl font-black tracking-tight md:text-6xl">
+                Site em manutenção
+              </h2>
+
+              <p id="maintenance-description" className="mt-6 max-w-xl text-base leading-8 text-white/70 md:text-lg">
+                Estamos realizando ajustes técnicos para melhorar a experiência, desempenho e apresentação institucional
+                do site.
+              </p>
+
+              <div className="mt-8 grid max-w-xl gap-3 sm:grid-cols-2">
+                <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-5">
+                  <p className="text-sm font-bold text-white">Status</p>
+                  <p className="mt-1 text-xs font-semibold text-emerald-200">Ajustes em andamento</p>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-5">
+                  <p className="text-sm font-bold text-white">Operação</p>
+                  <p className="mt-1 text-xs font-semibold text-white/55">Ambiente institucional</p>
+                </div>
+              </div>
+
+              <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
+                <button
+                  ref={confirmButtonRef}
+                  type="button"
+                  onClick={onClose}
+                  className="inline-flex items-center justify-center rounded-full bg-brand-red-dark px-8 py-4 text-sm font-black uppercase tracking-[0.16em] text-white shadow-xl shadow-red-950/30 transition hover:-translate-y-0.5 hover:bg-brand-red-dark-hover focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                >
+                  Entendi, acessar site
+                </button>
+
+                <p className="text-sm leading-6 text-white/45">
+                  O acesso está liberado para visualização do ambiente em desenvolvimento.
                 </p>
               </div>
-            </div>
-          </aside>
-
-          <section className="relative flex flex-col justify-center p-8 md:p-12 lg:p-14">
-            <span className="w-fit rounded-full border border-white/10 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.28em] text-white/70">
-              Aviso temporário
-            </span>
-
-            <h1 id="maintenance-title" className="mt-7 max-w-xl text-4xl font-black tracking-tight md:text-6xl">
-              Site em manutenção
-            </h1>
-
-            <p className="mt-6 max-w-xl text-base leading-8 text-white/70 md:text-lg">
-              Estamos realizando ajustes técnicos para melhorar a experiência, desempenho e apresentação institucional
-              do site.
-            </p>
-
-            <div className="mt-8 grid max-w-xl gap-3 sm:grid-cols-2">
-              <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-5">
-                <p className="text-sm font-bold text-white">Status</p>
-                <p className="mt-1 text-xs font-semibold text-emerald-200">Ajustes em andamento</p>
-              </div>
-
-              <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-5">
-                <p className="text-sm font-bold text-white">Operação</p>
-                <p className="mt-1 text-xs font-semibold text-white/55">Ambiente institucional</p>
-              </div>
-            </div>
-
-            <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
-              <button
-                type="button"
-                onClick={onClose}
-                className="inline-flex items-center justify-center rounded-full bg-[#B3261E] px-8 py-4 text-sm font-black uppercase tracking-[0.16em] text-white shadow-xl shadow-red-950/30 transition hover:-translate-y-0.5 hover:bg-[#9D1F19]"
-              >
-                Entendi, acessar site
-              </button>
-
-              <p className="text-sm leading-6 text-white/45">
-                O acesso está liberado para visualização do ambiente em desenvolvimento.
-              </p>
-            </div>
-          </section>
+            </section>
+          </div>
         </div>
       </div>
     </div>

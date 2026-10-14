@@ -1,110 +1,34 @@
 @import "tailwindcss";
 
-:root {
-  --brand-blue: #1E2E7A;
-  --brand-dark-blue: #0D173F;
-  --brand-red: #ED1C24;
-  --brand-red-dark: #B3261E;
-  --brand-red-dark-hover: #9D1F19;
-  --brand-light: #F5F7FA;
-  --brand-ink: #0F172A;
+/*
+  Paleta da marca (mesmos valores de antes). O Tailwind v4 gera as utilities a partir daqui:
+  bg-brand-blue, text-brand-red, hover:bg-brand-red-dark-hover, bg-brand-red-dark/20, border-brand-blue/25 etc.
+*/
+@theme {
+  --color-brand-blue: #1E2E7A;
+  --color-brand-dark-blue: #0D173F;
+  --color-brand-red: #ED1C24;
+  --color-brand-red-dark: #B3261E;
+  --color-brand-red-dark-hover: #9D1F19;
+  --color-brand-light: #F5F7FA;
+  --color-brand-ink: #0F172A;
+  --color-brand-panel: color-mix(in srgb, #0D173F 92%, #ffffff 8%);
+  --color-brand-chart: color-mix(in srgb, #0D173F 94%, #000000 6%);
 }
 
-.text-brand-blue {
-  color: var(--brand-blue);
+/* Cena 3D da hero: bordas em degradê para misturar com o fundo (mobile: topo e base; desktop: também a esquerda). */
+.hero-scene-mask {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 12%, #000 86%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 12%, #000 86%, transparent 100%);
 }
 
-.text-brand-blue-muted {
-  color: color-mix(in srgb, var(--brand-blue) 70%, transparent);
-}
-
-.text-brand-red {
-  color: var(--brand-red);
-}
-
-.text-brand-red-dark {
-  color: var(--brand-red-dark);
-}
-
-.bg-brand-blue {
-  background-color: var(--brand-blue);
-}
-
-.bg-brand-dark-blue {
-  background-color: var(--brand-dark-blue);
-}
-
-.bg-brand-red {
-  background-color: var(--brand-red);
-}
-
-.bg-brand-red-dark {
-  background-color: var(--brand-red-dark);
-}
-
-.bg-brand-red-dark-20 {
-  background-color: color-mix(in srgb, var(--brand-red-dark) 20%, transparent);
-}
-
-.bg-brand-red-dark-30 {
-  background-color: color-mix(in srgb, var(--brand-red-dark) 30%, transparent);
-}
-
-.bg-brand-red-dark-40 {
-  background-color: color-mix(in srgb, var(--brand-red-dark) 40%, transparent);
-}
-
-.bg-brand-light {
-  background-color: var(--brand-light);
-}
-
-.bg-brand-panel {
-  background-color: color-mix(in srgb, var(--brand-dark-blue) 92%, #ffffff 8%);
-}
-
-.bg-brand-chart {
-  background-color: color-mix(in srgb, var(--brand-dark-blue) 94%, #000000 6%);
-}
-
-.border-brand-blue-soft {
-  border-color: color-mix(in srgb, var(--brand-blue) 20%, transparent);
-}
-
-.border-brand-blue-subtle {
-  border-color: color-mix(in srgb, var(--brand-blue) 25%, transparent);
-}
-
-.focus-border-brand-blue:focus {
-  border-color: var(--brand-blue);
-}
-
-.hover-text-brand-blue:hover {
-  color: var(--brand-blue);
-}
-
-.hover-text-brand-red:hover {
-  color: var(--brand-red);
-}
-
-.hover-bg-brand-blue:hover {
-  background-color: var(--brand-blue);
-}
-
-.hover-bg-brand-red-dark:hover {
-  background-color: var(--brand-red-dark-hover);
-}
-
-.hover-border-brand-red-soft:hover {
-  border-color: color-mix(in srgb, var(--brand-red) 40%, transparent);
-}
-
-.group:hover .group-hover-bg-brand-red-dark {
-  background-color: var(--brand-red-dark);
-}
-
-.via-brand-red-dark-20 {
-  --tw-gradient-via: color-mix(in srgb, var(--brand-red-dark) 20%, transparent);
-  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-via), var(--tw-gradient-to);
+@media (min-width: 80rem) {
+  .hero-scene-mask {
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 24%), linear-gradient(to bottom, transparent 0, #000 10%, #000 90%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(to right, transparent 0, #000 24%), linear-gradient(to bottom, transparent 0, #000 10%, #000 90%, transparent 100%);
+    mask-composite: intersect;
+  }
 }
 
 html {
@@ -168,10 +92,17 @@ body {
 
 .theme-float-toggle {
   position: fixed;
-  right: 24px;
-  bottom: 24px;
+  right: 16px;
+  bottom: 16px;
   z-index: 80;
   box-shadow: 0 24px 60px rgba(15, 23, 42, .22);
+}
+
+@media (min-width: 40rem) {
+  .theme-float-toggle {
+    right: 24px;
+    bottom: 24px;
+  }
 }
 
 .theme-dark {
@@ -180,12 +111,17 @@ body {
 }
 
 .theme-dark header,
+.theme-dark .mobile-menu-panel,
 .theme-dark .section-light,
 .theme-dark .section-soft,
 .theme-dark footer {
   background-color: #050816 !important;
   color: #f8fafc !important;
   border-color: rgba(148, 163, 184, .18) !important;
+}
+
+.theme-dark .mobile-menu-panel nav > a:hover {
+  background-color: rgba(148, 163, 184, .12);
 }
 
 .theme-dark .surface,
@@ -231,6 +167,197 @@ body {
   box-shadow: 0 24px 60px rgba(0, 0, 0, .42);
 }
 
+/* Mapa de rotas (fundo da seção Nossa Trajetória) */
+.nr-map {
+  opacity: .9;
+}
+
+.nr-state {
+  fill: color-mix(in srgb, var(--color-brand-blue) 5%, transparent);
+  stroke: color-mix(in srgb, var(--color-brand-blue) 22%, transparent);
+  stroke-width: .8;
+  stroke-linejoin: round;
+}
+
+.nr-state-north {
+  fill: color-mix(in srgb, var(--color-brand-blue) 13%, transparent);
+  stroke: color-mix(in srgb, var(--color-brand-blue) 38%, transparent);
+}
+
+.nr-river {
+  fill: none;
+  stroke: color-mix(in srgb, var(--color-brand-blue) 30%, transparent);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nr-route {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.4;
+}
+
+.nr-route-boat {
+  stroke: color-mix(in srgb, var(--color-brand-blue) 28%, transparent);
+}
+
+.nr-route-road {
+  stroke: color-mix(in srgb, var(--color-brand-red-dark) 32%, transparent);
+  stroke-dasharray: 5 4;
+}
+
+.nr-routes-static .nr-route {
+  stroke-width: 2.2;
+}
+
+.nr-routes-static .nr-route-boat {
+  stroke: color-mix(in srgb, var(--color-brand-blue) 60%, transparent);
+}
+
+.nr-routes-static .nr-route-road {
+  stroke: color-mix(in srgb, var(--color-brand-red-dark) 65%, transparent);
+}
+
+.nr-trail {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+}
+
+.nr-trail-boat {
+  stroke: var(--color-brand-blue);
+}
+
+.nr-trail-road {
+  stroke: var(--color-brand-red-dark);
+}
+
+.nr-craft-boat {
+  fill: var(--color-brand-blue);
+  stroke: var(--color-brand-light);
+  stroke-width: .7;
+}
+
+.nr-craft-truck {
+  fill: var(--color-brand-red-dark);
+  stroke: var(--color-brand-light);
+  stroke-width: .7;
+}
+
+.nr-craft-detail {
+  fill: var(--color-brand-light);
+  stroke: none;
+}
+
+.nr-city {
+  fill: var(--color-brand-light);
+  stroke: var(--color-brand-blue);
+  stroke-width: 1.6;
+}
+
+.nr-city-hub {
+  fill: var(--color-brand-red-dark);
+  stroke: var(--color-brand-light);
+  stroke-width: 2;
+}
+
+.nr-hub-pulse {
+  fill: none;
+  stroke: var(--color-brand-red-dark);
+  stroke-width: 2;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: nrPulse 2.4s ease-out infinite;
+}
+
+.nr-label {
+  fill: var(--color-brand-blue);
+  font-size: 13px;
+  font-weight: 800;
+  paint-order: stroke;
+  stroke: var(--color-brand-light);
+  stroke-width: 3.5px;
+  stroke-linejoin: round;
+}
+
+.nr-label-hub {
+  fill: var(--color-brand-red-dark);
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.nr-label-city {
+  font-size: 11px;
+  font-weight: 700;
+  opacity: .8;
+}
+
+.theme-dark .nr-state {
+  fill: rgba(148, 163, 184, .05);
+  stroke: rgba(148, 163, 184, .2);
+}
+
+.theme-dark .nr-state-north {
+  fill: color-mix(in srgb, var(--color-brand-blue) 30%, transparent);
+  stroke: rgba(148, 163, 184, .38);
+}
+
+.theme-dark .nr-river {
+  stroke: color-mix(in srgb, var(--color-brand-blue) 35%, rgba(255, 255, 255, .4));
+}
+
+.theme-dark .nr-route-boat {
+  stroke: color-mix(in srgb, var(--color-brand-blue) 35%, rgba(255, 255, 255, .34));
+}
+
+.theme-dark .nr-trail-boat {
+  stroke: color-mix(in srgb, var(--color-brand-blue) 45%, #ffffff);
+}
+
+.theme-dark .nr-craft-boat {
+  fill: color-mix(in srgb, var(--color-brand-blue) 45%, #ffffff);
+  stroke: #050816;
+}
+
+.theme-dark .nr-craft-truck,
+.theme-dark .nr-city-hub {
+  stroke: #050816;
+}
+
+.theme-dark .nr-craft-detail {
+  fill: #050816;
+}
+
+.theme-dark .nr-city {
+  fill: #050816;
+  stroke: color-mix(in srgb, var(--color-brand-blue) 45%, #ffffff);
+}
+
+.theme-dark .nr-city-hub {
+  fill: var(--color-brand-red);
+}
+
+.theme-dark .nr-label {
+  fill: #cbd5e1;
+  stroke: #050816;
+}
+
+.theme-dark .nr-label-hub {
+  fill: var(--color-brand-red);
+}
+
+/* Cartões da trajetória levemente translúcidos para o mapa aparecer por trás */
+.theme-dark .timeline-surface {
+  background-color: rgba(11, 18, 43, .78) !important;
+}
+
+@keyframes nrPulse {
+  0% { opacity: .9; transform: scale(1); }
+  100% { opacity: 0; transform: scale(3.6); }
+}
+
 @keyframes softFloat {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
@@ -265,7 +392,8 @@ body {
   .pulse-orb,
   .status-pulse,
   .motion-draw-line,
-  .motion-draw-line-slow {
+  .motion-draw-line-slow,
+  .nr-hub-pulse {
     animation: none;
   }
 }
