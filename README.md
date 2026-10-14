@@ -15,13 +15,6 @@ npm run dev
 npm run build
 ```
 
-### Domínio raiz
 
 
-### Subdomínio www
-
-```txt
-CNAME www seu-usuario.github.io
-```
-
-Depois marque `Enforce HTTPS` no GitHub Pages quando estiver disponível.
+https://amztest-laohd.ondigitalocean.app/
