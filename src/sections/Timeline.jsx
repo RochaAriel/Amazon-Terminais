@@ -8,7 +8,7 @@ export default function Timeline() {
       {/* Fundo: mapa do Brasil com envios de Manaus para a Região Norte e o Sul (barco e caminhão) */}
       <NorthRoutesMap />
       <div className="relative z-10 mx-auto max-w-7xl px-5 lg:px-8">
-        <SectionTitle eyebrow="Nossa Trajetória" title="Uma história construída em Manaus." description="Da distribuição de aço ao terminal portuário: os principais marcos do grupo Amazon Aço." />
+        <SectionTitle eyebrow="Nossa Trajetória" title="Da distribuição de aço à operação portuária." description="Os marcos da formação do grupo Amazon Aço e da implantação de seu terminal em Manaus." />
         <div className="relative mt-16">
           <div className="absolute left-1/2 top-0 hidden h-full w-px bg-slate-300/70 lg:block" />
           <div className="grid gap-6">

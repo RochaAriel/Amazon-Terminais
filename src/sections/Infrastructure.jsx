@@ -13,8 +13,8 @@ export default function Infrastructure() {
       <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 lg:grid-cols-[.9fr_1.1fr] lg:px-8">
         <div>
           <p className="text-sm font-black uppercase tracking-[0.28em] text-brand-red-dark">Infraestrutura</p>
-          <h2 className="mt-5 text-3xl font-black tracking-tight text-brand-blue sm:text-4xl md:text-5xl xl:text-6xl">Estrutura própria para operações de alta exigência.</h2>
-          <p className="theme-text-muted mt-6 text-lg leading-8 text-slate-600">O terminal fica no Puraquequara, zona leste de Manaus, ao lado do complexo industrial da Amazon Aço. Opera como Terminal de Uso Privado, autorizado pelo Governo Federal e regulado pela ANTAQ.</p>
+          <h2 className="mt-5 text-3xl font-black tracking-tight text-brand-blue sm:text-4xl md:text-5xl xl:text-6xl">O terminal no Puraquequara.</h2>
+          <p className="theme-text-muted mt-6 text-lg leading-8 text-slate-600">Localizado na zona leste de Manaus, o terminal está junto ao complexo industrial da Amazon Aço. A ficha reúne sua modalidade de operação, autorização e endereço.</p>
           <div className="mt-8 space-y-4">
             {highlights.map((item) => (
               <div key={item} className="surface flex items-center gap-3 rounded-2xl border border-slate-200 bg-brand-light p-4">
@@ -29,7 +29,7 @@ export default function Infrastructure() {
             <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.3em] text-white/55">Dados do terminal</p>
-                <h3 className="mt-2 text-2xl font-black">Ficha técnica</h3>
+                <h3 className="mt-2 text-2xl font-black">Informações do terminal</h3>
               </div>
               <span className="w-fit rounded-full bg-white/10 px-3 py-1 text-xs font-black text-white/80">Manaus/AM</span>
             </div>

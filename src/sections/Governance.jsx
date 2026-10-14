@@ -6,7 +6,7 @@ export default function Governance() {
   return (
     <section id="qualidade" className="section-light bg-white py-20" data-reveal>
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
-        <SectionTitle eyebrow="Qualidade e Governança" title="Pilares institucionais aplicados à operação portuária." description="O terminal segue o Sistema de Gestão Integrada do grupo Amazon Aço, com foco no cliente, nos processos, nos riscos e na sustentabilidade." />
+        <SectionTitle eyebrow="Qualidade e Governança" title="Critérios para conduzir a operação." description="As diretrizes de gestão do grupo Amazon Aço orientam o atendimento, a organização dos processos e o cuidado com pessoas e infraestrutura." />
         <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {governancePillars.map((pillar, index) => (
             <article key={pillar.title} data-reveal="zoom" style={{ "--reveal-delay": `${index * 70}ms` }} className="surface group rounded-[2rem] border border-slate-200 bg-brand-light p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">

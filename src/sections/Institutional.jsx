@@ -1,16 +1,16 @@
 import SectionTitle from "../components/SectionTitle.jsx";
 
 const cards = [
-  ["Mais de 20 anos em Manaus", "Desde março de 2003 no mercado do aço, com equipe própria e representantes comerciais em todo o Brasil."],
-  ["Indústria na Região Norte", "Produção de tubos, perfis, chapas e telhas de aço em uma unidade com cerca de 75 mil m² de área construída."],
-  ["Terminal próprio", "O Terminal de Uso Privado aproxima navio, pátio e indústria, com mais controle sobre prazos e sobre a carga que chega à região."],
+  ["Origem no aço", "A Amazon Aço iniciou suas atividades em Manaus em 2003, na distribuição de ferro e aço. A atividade industrial e o terminal portuário vieram nas etapas seguintes."],
+  ["Presença industrial", "O grupo produz tubos, perfis, chapas e telhas de aço. Sua unidade industrial no Puraquequara reúne cerca de 75 mil m² de área construída."],
+  ["Ligação com o porto", "A Amazon Terminais integra a estrutura logística do grupo, ligando a movimentação portuária às atividades do complexo industrial em Manaus."],
 ];
 
 export default function Institutional() {
   return (
     <section id="institucional" className="section-light bg-white py-20" data-reveal>
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
-        <SectionTitle title="Do aço ao porto: um grupo que cresce com Manaus." description="Fundado em 2003 como distribuidor de aço, o grupo Amazon Aço se tornou indústria e referência na Região Norte. Com a Amazon Terminais, passou a operar também a porta de entrada da sua carga." />
+        <SectionTitle eyebrow="Quem somos" title="A operação portuária do grupo Amazon Aço." description="A Amazon Terminais faz parte de uma trajetória que começou na distribuição de aço em Manaus. O terminal próprio integra o transporte de cargas à estrutura industrial do grupo no Puraquequara." />
         <div className="mt-14 grid gap-6 lg:grid-cols-3">
           {cards.map(([title, text], index) => (
             <div key={title} data-reveal="zoom" style={{ "--reveal-delay": `${index * 90}ms` }} className="surface rounded-[2rem] border border-slate-200 bg-brand-light p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">

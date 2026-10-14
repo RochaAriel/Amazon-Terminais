@@ -49,10 +49,10 @@ export default function Header() {
         </nav>
         <div className="ml-auto mr-3 hidden items-center gap-3 md:flex xl:ml-0 xl:mr-0">
           <a href="#contato" className="whitespace-nowrap rounded-full border border-brand-blue/25 px-5 py-2.5 text-sm font-bold text-brand-blue transition hover:bg-brand-blue hover:text-white">
-            Portal do Cliente
+            Atendimento ao cliente
           </a>
           <a href="#contato" className="whitespace-nowrap rounded-full bg-brand-red-dark px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-red-900/15 transition hover:-translate-y-0.5 hover:bg-brand-red-dark-hover">
-            Fale Conosco
+            Fale com a equipe
           </a>
         </div>
         <button
@@ -86,10 +86,10 @@ export default function Header() {
           ))}
           <div className="mt-3 grid gap-3 border-t border-slate-200/80 pt-4 pb-2 md:hidden">
             <a href="#contato" onClick={closeMenu} className="rounded-full border border-brand-blue/25 px-5 py-3 text-center text-sm font-bold text-brand-blue transition hover:bg-brand-blue hover:text-white">
-              Portal do Cliente
+              Atendimento ao cliente
             </a>
             <a href="#contato" onClick={closeMenu} className="rounded-full bg-brand-red-dark px-5 py-3 text-center text-sm font-bold text-white shadow-lg shadow-red-900/15 transition hover:bg-brand-red-dark-hover">
-              Fale Conosco
+              Fale com a equipe
             </a>
           </div>
         </nav>

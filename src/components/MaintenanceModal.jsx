@@ -129,10 +129,10 @@ export default function MaintenanceModal({ onClose }) {
                 <AmazonALogo />
 
                 <div className="mt-8 max-w-xs">
-                  <p className="text-sm font-bold uppercase tracking-[0.28em] text-brand-red">Ambiente protegido</p>
+                  <p className="text-sm font-bold uppercase tracking-[0.28em] text-brand-red">Site em atualização</p>
 
                   <p className="mt-3 text-sm leading-6 text-white/58">
-                    Estamos preparando uma experiência institucional mais estável, moderna e segura.
+                    Conheça o terminal, sua estrutura e a trajetória do grupo Amazon Aço.
                   </p>
                 </div>
               </div>
@@ -148,8 +148,7 @@ export default function MaintenanceModal({ onClose }) {
               </h2>
 
               <p id="maintenance-description" className="mt-6 max-w-xl text-base leading-8 text-white/70 md:text-lg">
-                Estamos realizando ajustes técnicos para melhorar a experiência, desempenho e apresentação institucional
-                do site.
+                Estamos atualizando o conteúdo e a apresentação do site da Amazon Terminais.
               </p>
 
               <div className="mt-8 grid max-w-xl gap-3 sm:grid-cols-2">
@@ -159,8 +158,8 @@ export default function MaintenanceModal({ onClose }) {
                 </div>
 
                 <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-5">
-                  <p className="text-sm font-bold text-white">Operação</p>
-                  <p className="mt-1 text-xs font-semibold text-white/55">Ambiente institucional</p>
+                  <p className="text-sm font-bold text-white">Conteúdo</p>
+                  <p className="mt-1 text-xs font-semibold text-white/55">Em revisão</p>
                 </div>
               </div>
 
@@ -171,11 +170,11 @@ export default function MaintenanceModal({ onClose }) {
                   onClick={onClose}
                   className="inline-flex items-center justify-center rounded-full bg-brand-red-dark px-8 py-4 text-sm font-black uppercase tracking-[0.16em] text-white shadow-xl shadow-red-950/30 transition hover:-translate-y-0.5 hover:bg-brand-red-dark-hover focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                 >
-                  Entendi, acessar site
+                  Continuar para o site
                 </button>
 
                 <p className="text-sm leading-6 text-white/45">
-                  O acesso está liberado para visualização do ambiente em desenvolvimento.
+                  Você pode consultar o site enquanto os ajustes são realizados.
                 </p>
               </div>
             </section>

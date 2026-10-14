@@ -5,7 +5,7 @@ export default function News() {
   return (
     <section className="section-soft bg-brand-light py-20" data-reveal>
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
-        <SectionTitle eyebrow="Comunicação" title="Notícias e comunicados." description="Marcos e atualizações do terminal e do grupo Amazon Aço." />
+        <SectionTitle eyebrow="Registro institucional" title="Marcos do terminal e do grupo." description="Registros históricos sobre a autorização do terminal, o projeto de ampliação e a origem da Amazon Aço." />
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {news.map((item, index) => (
             <article key={item.title} data-reveal="zoom" style={{ "--reveal-delay": `${index * 90}ms` }} className="surface rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
