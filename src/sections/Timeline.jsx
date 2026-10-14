@@ -5,7 +5,7 @@ import { timeline } from "../data/siteData.js";
 export default function Timeline() {
   return (
     <section id="trajetoria" className="section-soft relative overflow-clip bg-brand-light py-20" data-reveal>
-      {/* Fundo: mapa do Brasil com envios de Manaus para a Região Norte (barco e caminhão) */}
+      {/* Fundo: mapa do Brasil com envios de Manaus para a Região Norte e o Sul (barco e caminhão) */}
       <NorthRoutesMap />
       <div className="relative z-10 mx-auto max-w-7xl px-5 lg:px-8">
         <SectionTitle eyebrow="Nossa Trajetória" title="Uma história construída em Manaus." description="Da distribuição de aço ao terminal portuário: os principais marcos do grupo Amazon Aço." />

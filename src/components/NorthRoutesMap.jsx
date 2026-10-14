@@ -1,14 +1,16 @@
 import { useEffect, useMemo, useRef } from "react";
 import { cities, mapSize, rivers, routes, states } from "../data/northRoutesMap.js";
 
-// Mapa do Brasil com envios a partir de Manaus para toda a Região Norte.
-// Rotas fluviais (barco) e rodoviárias (caminhão); Rio Branco e Palmas são intermodais.
+// Mapa do Brasil com envios a partir de Manaus para toda a Região Norte e para os estados do Sul.
+// Rotas fluviais (barco) e rodoviárias (caminhão). Intermodais: Rio Branco e Palmas; Curitiba,
+// Florianópolis e Porto Alegre seguem de barco até Porto Velho e de caminhão pela BR-364/BR-163.
 // Fica no fundo da seção "Nossa Trajetória", fixo na tela (sticky) enquanto os marcos rolam por cima.
 
 const SPEED = { boat: 42, road: 58 }; // unidades do viewBox por segundo
 const TRANSFER_PAUSE = 0.9; // segundos parado na troca barco -> caminhão
 const DWELL = 2.6; // segundos parado no destino antes de voltar a Manaus
 const FLEET = 5; // envios simultâneos
+const MAX_LEG = 9; // duração máxima de um trecho (segundos)
 
 const ease = (t) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2);
 
@@ -162,7 +164,8 @@ export default function NorthRoutesMap() {
         }
         const { journey } = unit;
         const leg = journey.legs[unit.leg];
-        const duration = Math.max(3, leg.line.len / SPEED[leg.mode]);
+        // Trechos longos (rodovias até o Sul) andam mais rápido para não passar de MAX_LEG segundos
+        const duration = Math.min(MAX_LEG, Math.max(3, leg.line.len / SPEED[leg.mode]));
 
         if (unit.phase === "travel") {
           const raw = Math.min(1, local / duration);

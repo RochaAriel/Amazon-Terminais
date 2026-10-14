@@ -1,6 +1,6 @@
-// Especificação da cena do hero: navio graneleiro atracado no píer, com 3 guindastes de bordo
+// Especificação da cena do hero: navio graneleiro atracado na plataforma do terminal, com 3 guindastes de bordo
 // descarregando bobinas de aço e contêineres.
-// Modelo genérico e estilizado (sem foto de referência). Medidas em unidades da cena (~1 un = 10 m).
+// Navio genérico e estilizado; o arranjo da plataforma e da ponte segue a foto aérea do terminal. Medidas em unidades da cena (~1 un = 10 m).
 // Só dados: a construção dos objetos fica em createPortScene.js.
 
 export const palette = {
@@ -21,6 +21,8 @@ export const palette = {
   fender: "#14171F",
   bollard: "#2B313C",
   steel: "#B9C1CC",
+  pile: "#4A5161",
+  asphalt: "#3A4050",
   darkSteel: "#3A4150",
   glass: "#0B1636",
   rope: "#D6CDBA",
@@ -61,28 +63,53 @@ export const ship = {
   coamingHeight: 0.22,
 };
 
+// Plataforma de atracação no meio do rio, sobre estacas (layout real do terminal: o navio atraca na
+// plataforma, que se liga à margem por uma ponte de acesso). ~1 un = 10 m.
 export const quay = {
-  zStart: 1.85, // borda do píer (lado do costado de boreste)
-  depth: 3.6,
-  topY: 0.35,
-  xFrom: -9.5,
-  xTo: 10,
-  fenders: [-6.5, -3.8, -1.1, 1.6, 4.3, 7.0],
-  bollards: [-7.2, -4.4, -0.6, 2.4, 5.4, 8.3],
-  lightMasts: [-4.6, 9.4],
-  // Pilhas fixas de contêineres no fundo do píer (fora das vagas de descarga)
-  staticStacks: [
-    { x: -8.0, columns: 3, tiers: 2 },
-    { x: 7.0, columns: 3, tiers: 2 },
+  zStart: 1.85, // face de atracação (lado do costado de boreste)
+  depth: 3.0,
+  topY: 0.95, // deck alto: estacas aparentes acima da água (variação de nível do rio)
+  slab: 0.3, // espessura da laje
+  xFrom: -6.2,
+  xTo: 8.2,
+  // Estacas: uma linha de estacas a cada `spacing` em x, nas posições z de `rows`
+  piles: { spacing: 1.2, rows: [2.15, 3.35, 4.55], radius: 0.1, bottomY: -1.5 },
+  fenders: [-5.4, -2.8, -0.2, 2.4, 5.0, 7.5],
+  // Cabeços [x, z]: plataforma + um em cada dolfim (índices usados em `mooring`)
+  bollards: [[-9.4, 2.7], [-5.6, 2.23], [-0.6, 2.23], [2.4, 2.23], [7.6, 2.23], [11.2, 2.7]],
+  lightMasts: [-2.4, 5.6],
+  // Pilha fixa de contêineres no fundo da plataforma (fora das vagas de descarga)
+  staticStacks: [{ x: -4.7, columns: 2, tiers: 2 }],
+};
+
+// Dolfins de amarração nas pontas, ligados à plataforma por passarelas metálicas
+export const dolphins = {
+  size: 1.0,
+  items: [
+    { x: -9.4, z: 2.7 },
+    { x: 11.2, z: 2.7 },
   ],
 };
 
-// Cabos de amarração: ponto no convés (x, z) até o cabeço do píer (índice em quay.bollards)
+// Ponte de acesso: sai do fundo da plataforma e segue até a margem (sai do quadro)
+export const trestle = {
+  // Como na foto aérea: vista da margem, a plataforma se estende para a esquerda a partir do
+  // encontro com a ponte, e a ponte forma ~106° com a plataforma (74° a partir do eixo +x).
+  anchorX: 7.2, // ponto de encontro com a plataforma (ponta de vante)
+  angleDeg: 74, // direção da ponte a partir do eixo +x, girando para o lado da margem (+z)
+  length: 30,
+  width: 1.1,
+  slab: 0.22,
+  bentSpacing: 1.8, // pórticos de estacas
+  lightSpacing: 4.8,
+};
+
+// Cabos de amarração: ponto no convés (x, z) até um cabeço (índice em quay.bollards)
 export const mooring = [
-  { from: [7.1, 1.15], bollard: 5 }, // lançante de proa
+  { from: [7.1, 1.15], bollard: 5 }, // lançante de proa (dolfim de vante)
   { from: [6.0, 1.3], bollard: 3 }, // espringue de vante
   { from: [-5.9, 1.3], bollard: 2 }, // espringue de ré
-  { from: [-7.7, 0.9], bollard: 0 }, // lançante de popa
+  { from: [-7.7, 0.9], bollard: 0 }, // lançante de popa (dolfim de ré)
 ];
 
 export const gangway = { x: -5.15 };
